@@ -17,26 +17,50 @@ class Program
 
     static void Main()
     {
-        
+
         Console.WriteLine("Hello, World!");
 
-        logger.Warn("xD");
-        logger.Warn("xD");
-        logger.Warn("xD");
-        logger.Warn("xD");
-        logger.Warn("xD");
+        string spookiesVar = null;
+        //ArgumentNullExceptionTest(spookiesVar);
 
         var x = System.Configuration.ConfigurationManager.AppSettings.Get("Key0");
         Console.WriteLine(x);
 
-
         //Task.Run(() => new DiscordBotTestApp.FileProcessingHandler(@"C:\Users\Luca\Desktop\testFolder\rvxnjxz0.zip")).Wait();
         //Console.WriteLine("xd");
+        ResponseCallback response = new ResponseCallback();
+
+        //List<FileInfo> filesInfo = new List<FileInfo>();
+
+        //foreach (var file in Directory.GetFiles(@"C:\Users\Luca\Desktop\testFolder\testZIPDest"))
+        //{
+        //    filesInfo.Add(new FileInfo(file));
+        //}
+
+        //new ImageCompressor(filesInfo, response);
+
+
+        Console.WriteLine(AreImagePathsValidAsync(null));
 
     }
 
+    internal static bool AreImagePathsValidAsync(List<string> pathsOfImages)
+    {
+        bool result;
+        result = pathsOfImages?.Any() ?? default;
 
 
+        return result;
+    }
+
+    private static void ArgumentNullExceptionTest(string spookyVariable)
+    {
+        Console.WriteLine("Start of func!");
+
+        _ = spookyVariable ?? throw new ArgumentNullException(nameof(spookyVariable));
+
+        Console.WriteLine("End of func!");
+    }
 
     void CompressPhoto()
     {
@@ -85,7 +109,7 @@ class Program
         ResponseCallback response = new ResponseCallback();
         response.FilePath.ProgressChanged += FilePath_ProgressChanged;
 
-        Task.Run(() => CompressionHandler.InitAsync(fileInfo, response)).Wait();
+        //Task.Run(() => CompressionMaster.InitAsync(fileInfo, response)).Wait();
 
 
         logger.Log(Task.Run(() => RandomStringAsync()).Result);

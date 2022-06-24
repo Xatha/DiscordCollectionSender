@@ -11,29 +11,29 @@ namespace DiscordBotTestApp.Commands
 {
     class SlashCommandsGlobals
     {
+        private static readonly LoggerLibrary.Logger logger = new LoggerLibrary.Logger();
+
+        private static readonly DiscordSocketClient client = ClientGlobal.SocketClient;
+
         private List<SlashCommandBuilder> slashCommandCollection = new List<SlashCommandBuilder>();
-        private static LoggerLibrary.Logger logger = new LoggerLibrary.Logger();
-
-        private DiscordSocketClient client;
-
         public SlashCommandBuilder PostCollection { get; private set; }
         public SlashCommandBuilder MyPurpose { get; private set; }
-        
         public SlashCommandBuilder Ping { get; private set; }
-
         public SlashCommandBuilder Stop { get; private set; }
+        public SlashCommandBuilder GatewayTest { get; private set; }
 
-
-        public SlashCommandsGlobals(DiscordSocketClient client)
+        public SlashCommandsGlobals()
         {
-            this.client = client;
-
             BuildCommands();
             CreateCommandsAsync().Wait();
         }
 
         private void BuildCommands()
         {
+            this.GatewayTest = new SlashCommandBuilder()
+                    .WithName("gateway-test").WithDescription("tests the gateway.");
+            slashCommandCollection.Add(this.GatewayTest);
+
             this.PostCollection = new SlashCommandBuilder()
                     .WithName("post-collection")
                     .WithDescription("Post a collection of picture of supply the bot.")
@@ -77,8 +77,6 @@ namespace DiscordBotTestApp.Commands
                 await client.Rest.CreateGuildCommand(command.Build(), 438045930323968002);
                 await logger.Log($"{command.Name} was successfully created", nameof(SlashCommandsGlobals));
             }
-
-
 
             foreach (var command in slashCommandCollection)
             {

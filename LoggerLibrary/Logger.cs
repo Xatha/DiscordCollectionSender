@@ -40,11 +40,6 @@ namespace LoggerLibrary
         }
 
       
-        public Task Log(int objectID, object msg)
-        {
-            Console.WriteLine($"[Info] [ID = {objectID}] : {msg}");
-            return Task.CompletedTask;
-        }
 
         public Task LogWarn(object msg)
         {
