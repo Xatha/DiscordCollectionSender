@@ -47,7 +47,7 @@ namespace UtilsLibrary
             return results.Count == 0 ? null : results;
         }
 
-        public static List<string> GetAllFilesPathsFromFileList(List<FileInfo> files)
+        public static List<string> GetAllFilesPathsFromFileList(IEnumerable<FileInfo> files)
         {
             var filePaths = new List<string>();
 

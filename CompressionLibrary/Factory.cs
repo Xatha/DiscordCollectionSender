@@ -8,20 +8,18 @@ namespace CompressionLibrary
 {
     public static class Factory
     {
-        //Refrain from using this, since it increases coupling.
-        internal static ICompressionRatioGenerator CoupledCreate<T>(T instance) where T : ICompressionRatioGenerator
+        public async static Task<IImageCompressor> CreateImageCompressorAsync(List<FileInfo> imageFiles, IResponseCallback responseCallback, long targetFileSize = (long)8.389e+6)
         {
-            return instance;
+            return await ImageCompressor.CreateAsync(imageFiles, responseCallback, targetFileSize);
+        }
+        internal static ICompressionRatioGenerator CreateCompressionRatio()
+        {
+            return new CompressionRatioGenerator();
         }
 
-        internal static ICompressionRatioGenerator CreateCompressionRatio(long fileSizeInBytes, long targetSize, long tolerance = 524288)
+        public static Task<IResponseCallback> CreateResponseCallbackAsync()
         {
-            return new CompressionRatioGenerator(fileSizeInBytes, targetSize, tolerance);
-        }
-
-        internal static Task<ICompressionRatioGenerator> CreateCompressionRatioAsync(long fileSizeInBytes, long targetSize, long tolerance = 524288)
-        {
-            return Task.FromResult<ICompressionRatioGenerator>(new CompressionRatioGenerator(fileSizeInBytes, targetSize, tolerance));
+            return Task.FromResult<IResponseCallback>(new ResponseCallback());
         }
     }
 }

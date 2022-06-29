@@ -1,13 +1,18 @@
-﻿using CompressionLibrary;
+﻿using BenchmarkDotNet.Running;
+using CompressionLibrary;
 using Discord;
+using DiscordCollectionSenderBot.MessageService.Message;
 using log4net;
 using log4net.Config;
 using nQuant;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO.Compression;
+using System.Linq.Expressions;
 using System.Text;
+using TestingConsoleApp;
 using static System.Net.Mime.MediaTypeNames;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -18,29 +23,73 @@ class Program
     static void Main()
     {
 
-        Console.WriteLine("Hello, World!");
+        var container = new FactoryContainer();
+        container.Register<TestClass, ITestClass>();
+        container.RegisterTypeS<int, IArgumentProvider>();
+        var myClass = container.GetImplementation<ITestClass>();
+        myClass.HelloWorld();
 
-        string spookiesVar = null;
-        //ArgumentNullExceptionTest(spookiesVar);
+        //var sameClassAgain = container.GetImplemnationCached<ITestClass>();
+        //sameClassAgain.HelloWorld();
+        //await Benchy.InitLogin();
 
-        var x = System.Configuration.ConfigurationManager.AppSettings.Get("Key0");
-        Console.WriteLine(x);
+        //logger.Info("xD");
+        //Benchy.InitContainer();
 
-        //Task.Run(() => new DiscordBotTestApp.FileProcessingHandler(@"C:\Users\Luca\Desktop\testFolder\rvxnjxz0.zip")).Wait();
-        //Console.WriteLine("xd");
-        ResponseCallback response = new ResponseCallback();
-
-        //List<FileInfo> filesInfo = new List<FileInfo>();
-
-        //foreach (var file in Directory.GetFiles(@"C:\Users\Luca\Desktop\testFolder\testZIPDest"))
+        //const int iterations = 1_000_000;
+        //var stopwatch = Stopwatch.StartNew();
+        //for (int i = 0; i < iterations; i++)
         //{
-        //    filesInfo.Add(new FileInfo(file));
+        //    var myClass = new TestClass();
+        //    myClass.HelloWorld();
         //}
+        //stopwatch.Stop();
+        //Console.WriteLine($"[Newing] Time Taken {stopwatch.ElapsedTicks}ms");
 
-        //new ImageCompressor(filesInfo, response);
+        //stopwatch.Restart();
+        //for (int i = 0; i < iterations; i++)
+        //{
+        //    var myClass = container.GetImplementation<ITestClass>();
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine($"[GetImplementation] Time Taken {stopwatch.ElapsedMilliseconds}ms");
+
+        //stopwatch.Restart();
+        //for (int i = 0; i < iterations; i++)
+        //{
+        //    var myClass = container.GetImplemnationCached<ITestClass>();
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine($"[GetImplemnationCached] Time Taken {stopwatch.ElapsedMilliseconds}ms");
+
+        //stopwatch.Restart();
+        //for (int i = 0; i < iterations; i++)
+        //{
+        //    //var myClass = container.GetImplementationLambda<ITestClass>();
+
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine($"[GetImplementationLambda] Time Taken {stopwatch.ElapsedMilliseconds}ms");
+
+        //stopwatch.Restart();
+        //for (int i = 0; i < iterations; i++)
+        //{
+        //    //var myClass = container.GetImplemnationLambaFast<ITestClass>();
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine($"[GetImplemnationLambaFast] Time Taken {stopwatch.ElapsedMilliseconds}ms");
+
+        //for (int i = 0; i < iterations; i++)
+        //{
+        //    var myClass = container.GetImplemnationInvoke<ITestClass>();
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine($"[GetImplemnationInvoke] Time Taken {stopwatch.ElapsedTicks}ms");
+
+        BenchmarkRunner.Run<Benchy>();
 
 
-        Console.WriteLine(AreImagePathsValidAsync(null));
+
 
     }
 

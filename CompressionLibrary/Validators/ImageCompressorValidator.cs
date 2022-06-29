@@ -1,4 +1,6 @@
 ﻿using Discord;
+using log4net;
+using LoggerLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,39 +10,79 @@ using UtilsLibrary;
 
 namespace CompressionLibrary.Validators
 {
-    internal class ImageCompressorValidator
+    internal struct ImageCompressorValidator
     {
+        private static readonly ILog _logger = LogAsync.GetLogger();
+        public ValidatorResponse ValidationReponse { get; private set; } = new ValidatorResponse();
 
+        public ImageCompressorValidator()
+        {
 
-        internal async Task<(bool, ValidatorResponse)> AreImagePathsValidAsync(List<string> imagePaths)
+        }
+
+        internal async Task LogResponse(ValidatorResponse response)
+        {
+            string msg;
+            switch (response.Response)
+            {
+                case ResponseType.InvalidImageExtension:
+                    msg = "Image extension is invalid.";
+                    await _logger.ErrorAsync(msg);
+                    break;
+                case ResponseType.FileDoesNotExist:
+                    msg = "One or more files does not exist.";
+                    await _logger.ErrorAsync(msg);
+                    break;
+                case ResponseType.ListEmptyOrNull:
+                    msg = "Provided list is empty and/or null";
+                    await _logger.ErrorAsync(msg);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        internal async Task<bool> AreImagePathsValidAsync(List<string> imagePaths)
         {
             var boolResult = ListUtils.AnyOrFalse(imagePaths);
-            var responseResult = new ValidatorResponse();
-
             if (!boolResult)
             {
-                return (boolResult, new ValidatorResponse());
+                ValidationReponse.SetResponse(ResponseType.ListEmptyOrNull);
+                return (boolResult);
             }
             else
             {
                 foreach (var imagePath in imagePaths)
                 {
-
-                    boolResult = File.Exists(imagePath) ? await IsImageExtensionValid(imagePath) : false;
+                    if (File.Exists(imagePath))
+                    {
+                        (boolResult, ValidationReponse) = await IsImageExtensionValid(imagePath);
+                    }
+                    else
+                    {
+                        ValidationReponse.SetResponse(ResponseType.FileDoesNotExist);
+                        return (boolResult = false);
+                    }
                 }
             }
 
-            return (boolResult, new ValidatorResponse());
-
-
+            ValidationReponse.SetResponse(ResponseType.Valid);
+            return (boolResult);
         }
 
-
-        private Task<bool> IsImageExtensionValid(string imagePath)
+        private static Task<(bool, ValidatorResponse)> IsImageExtensionValid(string imagePath)
         {
+
             //TODO: Figure out a way to do this without hardcoding the extensions.
             var fileExtension = Path.GetExtension(imagePath);
-            return fileExtension != ".png" || fileExtension != ".jpg" ? Task.FromResult(false) : Task.FromResult(true);
+            if (fileExtension != ".png" || fileExtension  != ".jpg")
+            {
+                return Task.FromResult((false, new ValidatorResponse(ResponseType.InvalidImageExtension)));
+            }
+            else
+            {
+                return Task.FromResult((true, new ValidatorResponse(ResponseType.Valid)));
+            }
         }
 
 

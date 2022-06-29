@@ -6,33 +6,34 @@ using System.Threading.Tasks;
 
 namespace CompressionLibrary.Validators
 {
-    internal class ValidatorResponse 
+    internal struct ValidatorResponse 
     {
-        private List<ResponseType> responses = new();
+        internal ResponseType Response { get; private set; } = ResponseType.Valid;
 
-        internal ValidatorResponse()
+        internal ValidatorResponse(ResponseType responseType)
         {
-
+            SetResponse(responseType);
         }
 
-        internal void SetResponse(ResponseType responseType)
+        internal ValidatorResponse SetResponse(ResponseType responseType)
         {
-            responses.Add(responseType);
+            Response = responseType;
+            return this;
         }
 
-        internal bool IsResponseValid()
-        {
-            var result = true;
-            foreach (var response in responses)
-            {
-                if (response != ResponseType.Valid)
-                {
-                    result = false;
-                    break;
-                }
-            }
-            return result;
-        }
+        //internal bool IsResponseValid()
+        //{
+        //    var result = true;
+        //    foreach (var response in responses)
+        //    {
+        //        if (response != ResponseType.Valid)
+        //        {
+        //            result = false;
+        //            break;
+        //        }
+        //    }
+        //    return result;
+        //}
 
 
     }
